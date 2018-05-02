@@ -34,7 +34,7 @@
 
 \section{Introduction}
 
-\begin{frame}
+\begin{frame} {Motivation}
 Typical devices will usually contain a multitude of sensors for measuring properties that can be useful for modeling and analysis such as accelerations, rotational velocities, and magnetic fields just to name a few. 
 \begin{figure}
 \includegraphics[scale=0.08]{images/plane.png}
@@ -48,21 +48,107 @@ We can capture such data from Android  cellphones and try to mathematically find
 
 \section{Dataset}
 
-\begin{frame}
+\begin{frame} {HMOG}
 We will be using the hand movement, orientation, and
 grasp (HMOG) dataset \cite{phone}. This dataset contains a set of behavioral features that allows for continuous authentication of Android smartphone users. 
 \end{frame}
 
-\begin{frame}
+\begin{frame} {Users and Sessions}
 The HMOG dataset contains data for over 100 users with each user having 24 sessions of data. The different sessions of data refer to different tasks described by the following.
 \begin{enumerate}
 \item Reading \& Sitting: \{1,7,13,19\}
 \item Reading \& Walking: \{2,8,14,20\}
-\item Writing \& Sitting: \{3,7,13,19\}
-\item Reading \& Sitting: \{1,7,13,19\}
-\item Reading \& Sitting: \{1,7,13,19\}
+\item Writing \& Sitting: \{3,9,15,21\}
+\item Writing \& Walking: \{4,10,16,22\}
+\item Mapping \& Sitting: \{5,11,17,23\}
+\item Mapping \& Walking: \{6,12,18,24\}
 \end{enumerate}
 \end{frame}
+
+\begin{frame} {CSV Data Files}
+From there the data is furthered separated into each of its sensor measurements. The following list is the available data files we have for each session. 
+\begin{enumerate}
+\item Accelerometer.csv
+\item Gyroscope.csv
+\item Magnetometer.csv
+\item TouchEvent.csv
+\item KeyPressEvent.csv
+\item OneFingerTouchEvent.csv
+\item PinchEvent.csv
+\item ScrollEvent.csv
+\item StrokeEvent.csv
+\end{enumerate}
+\end{frame}
+
+\begin{frame} {Accelerometer Data}
+The accelerometer file contains the following information.
+\begin{itemize}
+\item Absolute Time Stamps
+\item Acceleration on the x-axis
+\item Acceleration on the y-axis
+\item Acceleration on the z-axis
+\item Phone Orientation: \{0,1,3\}
+\end{itemize}
+\end{frame}
+
+\begin{frame} {Gyroscope Data}
+The gyroscope file contains the following information.
+\begin{itemize}
+\item Absolute Time Stamps
+\item Angular speed about x-axis
+\item Angular speed about y-axis
+\item Angular speed about z-axis
+\item Phone Orientation: \{0,1,3\}
+\end{itemize}
+\end{frame}
+
+\begin{frame} {Magnetometer Data}
+The magnetometer file contains the following information.
+\begin{itemize}
+\item Absolute Time Stamps
+\item Ambient magnetic field in the x-axis
+\item Ambient magnetic field in the y-axis
+\item Ambient magnetic field in the z-axis
+\item Phone Orientation: \{0,1,3\}
+\end{itemize}
+\end{frame}
+
+\begin{frame} {Touch Event Data}
+The touch event file contains the following information.
+\begin{itemize}
+\item Absolute Time Stamps
+\item Pointer count: \{Single touch, Multi touch\}
+\item Pointer ID: \{First pointer, Second pointer in multi touch\}
+\item X location of touch
+\item Y location of touch
+\item Pressure of the touch 
+\item Contact size of touch
+\item Phone Orientation: \{0,1,3\}
+\end{itemize}
+\end{frame}
+
+\begin{frame} {Key Press Event Data}
+The key press event file contains the following information.
+\begin{itemize}
+\item Absolute Time Stamps
+\item Press Type: \{Finger down, Finger up\}
+\item Phone Orientation: \{0,1,3\}
+\end{itemize}
+\end{frame}
+
+% \begin{frame} {One Finger Touch Event Data}
+% The one finger touch event file contains the following information.
+% \begin{itemize}
+% \item Absolute Time Stamps
+% \item Press Time
+% \item Tap Type: \{First finger down of single tap, First finger down of double tap, Second finger down of double tap\}
+% \item X location of touch
+% \item Y location of touch
+% \item Pressure
+% \item Contact Size
+% \item Phone Orientation: \{0,1,3\}
+% \end{itemize}
+% \end{frame}
 
 \section{Error Sources}
 
