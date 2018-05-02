@@ -35,15 +35,18 @@
 \section{Introduction}
 
 \begin{frame} {Motivation}
-Typical devices will usually contain a multitude of sensors for measuring properties that can be useful for modeling and analysis such as accelerations, rotational velocities, and magnetic fields just to name a few. 
+Typical devices will usually contain a multitude of sensors for measuring properties that can be useful for modeling and analysis such as accelerations, rotational velocities, and magnetic fields ect. 
 \begin{figure}
 \includegraphics[scale=0.08]{images/plane.png}
 \caption{Illustration of a plane with its corresponding axes of rotation labeled \cite{plane1}.}
 \end{figure}
 \end{frame}
 
-\begin{frame}
+\begin{frame} {Application}
 We can capture such data from Android  cellphones and try to mathematically find patterns of what people are doing with their phone. 
+\begin{figure}
+\includegraphics[scale=.4]{images/phone1.jpg}
+\end{figure}
 \end{frame}
 
 \section{Dataset}
@@ -192,6 +195,16 @@ Calibration errors can be attributed to errors in the scale factors, alignments,
 \begin{frame}
 \frametitle{Bias Instability Error}
 This kind of error can be attributed to bias fluctuations and can be modeled as a bias random walk. When integrating this kind of error, it results in a second-order random walk.  
+\end{frame}
+
+\begin{frame} {Sampling Issue}
+Another challenge we must address for this project is the non-ideal timing issues with the data. The data is not uniformly sampled. 
+\end{frame}
+
+\begin{frame} {Sampling Issue}
+\begin{figure}
+\includegraphics[scale=0.55]{images/data1.png}
+\end{figure}
 \end{frame}
 
 \section{Orientation Theory}
@@ -347,6 +360,48 @@ This kind of error can be attributed to bias fluctuations and can be modeled as 
   \item This allows varying timesteps between datapoints and is very easy to compute.
   \item This is closely related to \textbf{Rodrigues' rotation formula}.
   \end{itemize}
+\end{frame}
+
+\begin{frame} {Demo}
+Play interactive rotation plot.
+\end{frame}
+
+\section{Moving Forward}
+
+\begin{frame} {Accelerometer Data}
+The following steps from here will be to incorporate the accelerometer data into our models as well.
+\end{frame}
+
+\begin{frame} {Accelerometer Problems}
+So the data from the accelerometer has a significant amount of drift as well as a bit of white noise.
+\end{frame}
+
+\begin{frame} {Accelerometer Example}
+\begin{figure}
+\includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{images/accel_z}
+\end{figure}
+\end{frame}
+
+\begin{frame} {Low Pass Filter}
+\begin{figure}
+\includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{images/accel_z_low}
+\end{figure}
+\end{frame}
+
+\begin{frame} {Velocity Plot}
+\begin{figure}
+\includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{images/velocity}
+\end{figure}
+\end{frame}
+
+\begin{frame} {Position Plot}
+\begin{figure}
+\includegraphics[width=\linewidth,height=\textheight,keepaspectratio]{images/position}
+\end{figure}
+\end{frame}
+
+\begin{frame} {$SE(3)$}
+If we can manage to process the accelerometer data to a high degree of accuracy, we will then try to map the position data and rotation data into $SE(3)$. From there we then plan on building a classification system that will classify such data and determine if the person is walking, mapping, or sitting as well as doing some other subtask. 
 \end{frame}
 
 \begin{frame}
