@@ -194,6 +194,161 @@ Calibration errors can be attributed to errors in the scale factors, alignments,
 This kind of error can be attributed to bias fluctuations and can be modeled as a bias random walk. When integrating this kind of error, it results in a second-order random walk.  
 \end{frame}
 
+\section{Orientation Theory}
+
+\begin{frame}{Orientation Theory: Introduction}
+  \begin{itemize}
+  \item We have many sensors that yield data relevant to the phone's orientation.
+  \item The most precise is the phone's gyroscope.
+  \item We can find the orientation of the phone as a function of time by ``integrating'' the angular velocities given by the gyroscope.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{``Integrating'' The Gyroscope: Introduction}
+  \begin{itemize}
+  \item In general, we will represent rotations as matrices in \(SO(3)\).
+  \item Thus, if \(\bm{v_g}\), a vector in the global frame, and \(\bm{v_l}\), a vector in the local frame are related by
+    \[\bm{v_g} = C\bm{v_l}\]
+    for some \(C \in SO(3)\).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{``Integrating'' The Gyroscope: Angular Velocities}
+  \begin{itemize}
+  \item We want to calculate the rate of change of \(C\) w.r.t time.
+  \item To do this, we calculate
+    \[\dot{C}(t) = \lim_{\delta t \to 0}\frac{C(t + \delta t) - C(t)}{\delta t}\]
+  \item Since \(C(t + \delta t)\) is also a rotation matrix, we can write
+    \[C(t + \delta t) = C(t)A(t)\]
+    For some rotation matrix \(A(t)\).
+  \item Wish to find \(A(t)\).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{``Integrating'' The Gyroscope: Aside: Rotation Representation}
+  Consider the three rotation matrices:
+  \[R_x =
+    \begin{pmatrix}
+      1 & 0 & 0\\ 0 & \cos \phi & \sin\phi\\0 & -\sin\phi & \cos\phi
+    \end{pmatrix}\qquad
+    R_x =
+    \begin{pmatrix}
+      \cos\theta & 0 & -\sin\theta\\ 0 & 1 & 0\\\sin\theta & 0 & \cos\theta
+    \end{pmatrix}
+  \]
+  \[
+    R_x =
+    \begin{pmatrix}
+      \cos\varphi & \sin\varphi & 0\\
+      -\sin\varphi & \cos\varphi & 0\\
+      0 & 0 & 1
+    \end{pmatrix}
+  \]
+  Any rotation can be written as
+  \[R = R_xR_yR_z\]
+  for some \(\phi\), \(\theta\), and \(\varphi\).
+\end{frame}
+
+\begin{frame}{``Integrating'' The Gyroscope: Aside: Small Angle Approx}
+  In the limit as \(\phi\), \(\theta\), and \(\varphi\) go to zero, we can use a small angle approximation to write
+  \[R = R_xR_yR_z \approx
+    \begin{pmatrix}
+      1 & -\varphi & \theta\\
+      \varphi & 1 & -\phi\\
+      -\theta & \phi & 1
+    \end{pmatrix}
+  \]
+\end{frame}
+
+\begin{frame}{``Integrating'' The Gyroscope: A form for \(A(t)\)}
+  Since we know that \(\delta t\) is small, we can write
+  \[A(t) = I + \delta\Psi(t)\]
+  where
+  \[\delta\Psi(t) =
+    \begin{pmatrix}
+      0 & -\delta\varphi &\delta\theta\\
+      \delta\varphi & 0 & -\delta\phi\\
+      -\delta\theta & \delta\phi & 1
+    \end{pmatrix}
+  \]
+\end{frame}
+
+\begin{frame}{``Integrating'' The Gyroscope: Angular Velocities II}
+  Substituting our expression for \(A(t)\) into our derivative calculation yields
+  \begin{align*}
+    \dot{C}(t) &= \lim_{\delta t \to 0} \frac{C(t)(I + \delta\Psi(t)) - C(t)}{\delta t}\\
+               &= C(t)\lim_{\delta t \to 0} \dod{\Psi}{t}\\
+               &= C(t)\Omega(t)
+  \end{align*}
+  where
+  \[\Omega(t) =
+    \begin{pmatrix}
+      0 & -\omega_z(t) & \omega_y(t)\\ \omega_z(t) & 0 & -\omega_x(t) \\ -\omega_y(t) & \omega_x(t) & 0
+    \end{pmatrix}
+\]
+\end{frame}
+
+\begin{frame}{``Integrating'' The Gyroscope: A solution}
+  Thus, we wish to solve the nonlinear first order system of differential equations
+  \[\dot{C}(t) = C(t) \Omega(t)\]
+  which has the solution
+  \[C(t) = C(0) \cdot\exp\del{\int_0^t\Omega(t) \dif t}.\]
+\end{frame}
+
+\begin{frame}{``Integrating'' The Gyroscope: Applying the solution}
+  \begin{itemize}
+  \item Although we have an exact solution to the DE system, we don't have continuous data.
+  \item In fact, we don't even have uniformly sampled data.\footnote{RIP us.}
+  \item We need to solve the system of DEs numerically.
+  \item We don't care about drift, since we already have tons of it, so a rectangular method suffices.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{``Integrating'' The Gyroscope: Rectangular Integration}
+  \begin{enumerate}
+  \item For a time interval \(\intcc{t, t + \delta t}\), we can write
+    \[C(t + \delta t) = C(t) \cdot \exp\del{\int_t^{t + \delta t} \Omega(t) \dif t}\]
+  \item Using the rectangular rule yields
+    \[\int_t^{t + \delta t} \Omega(t) \dif t = B\]
+    where
+    \[B =
+      \begin{pmatrix}
+        0 & -\omega_z(t) & \omega_y(t)\\ \omega_z(t) & 0 & -\omega_x(t) \\ -\omega_y(t) & \omega_x(t) & 0
+      \end{pmatrix}\delta t
+    \]
+  \item Note that, \(B^3 = -B\)!
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{``Integrating'' The Gyroscope: Rectangular Integration 2}
+  \begin{enumerate}
+    \setcounter{enumi}{2}
+  \item Now, let \(\bm \omega\) be the angular velocity vector and let \(\sigma = \norm{\bm \omega \delta t}\), be the angle swept out.
+  \item Note that, \(B^3 = -\sigma^2 B\).
+  \item Now take the taylor expansion of \(\exp\) to find a convenient closed form.
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{``Integrating'' The Gyroscope: Taylor Expansion}
+  \begin{align*}
+    &= C(t + \delta t)\\
+     &= C(t)\del{I + B + \frac{B^2}{2!} + \frac{B^3}{3!} + \frac{B^4}{4!} + \cdots}\\
+                  &= C(t)\del{I + B + \frac{B^2}{2!} - \frac{\sigma^2B}{3!} - \frac{\sigma^2B^2}{4!} + \cdots}\\
+    &= C(t)\del{I + \del{1 - \frac{\sigma^2}{3!} + \frac{\sigma^3}{5!} + \cdots}B + \del{\frac{1}{2!} - \frac{\sigma^2}{4!} + \frac{\sigma^4}{6!} + \cdots}B^2}\\
+    &= C(t)\del{I + \frac{\sin \sigma}{\sigma}B + \frac{1 - \cos\sigma}{\sigma^2}B^2}
+  \end{align*}
+\end{frame}
+
+\begin{frame}{``Integrating'' The Gyroscope: Result}
+  \begin{itemize}
+  \item Using the update rule
+    \[C(t + \delta t) = C(t)\del{I + \frac{\sin \sigma}{\sigma}B + \frac{1 - \cos\sigma}{\sigma^2}B^2}\]
+    we can integrate the angular velocity with reasonable accuracy over short timespans.
+  \item This allows varying timesteps between datapoints and is very easy to compute.
+  \item This is closely related to \textbf{Rodrigues' rotation formula}.
+  \end{itemize}
+\end{frame}
+
 \begin{frame}
 \frametitle{References}
 \bibliographystyle{plain}
